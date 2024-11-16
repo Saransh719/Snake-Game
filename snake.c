@@ -205,7 +205,6 @@ void draw()
         printf("\n");
     }
     printf("Score : %d \n",score);
-    printf("X- %d \nY- %d",fruit_x,fruit_y);
 }
 
 void main()
