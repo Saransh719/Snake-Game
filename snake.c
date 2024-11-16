@@ -6,13 +6,35 @@
 #define HEIGHT 25
 #define WIDTH 50 
 
-int snake_tail_x[100]={WIDTH/2-1,WIDTH/2-2,WIDTH/2-3,WIDTH/2-4,WIDTH/2-5};
-int snake_tail_y[100]={HEIGHT/2,HEIGHT/2,HEIGHT/2,HEIGHT/2,HEIGHT/2};
+int snake_tail_x[100]={WIDTH/2-1,WIDTH/2-2};
+int snake_tail_y[100]={HEIGHT/2,HEIGHT/2};
 int snake_head_x=WIDTH/2,snake_head_y=HEIGHT/2;
 int is_tail=0;
 char direction='r';
-int fruit_x=24,fruit_y=5;
-int snake_len=5;
+int fruit_x=40,fruit_y=5;
+int snake_len=2;
+int score=0;
+int gameover=1;
+
+void is_gameover()
+{
+    //checking if snake hitting itself or boundary (used multiple if for reading simplicity but they are not required)
+    for (int i=0;i<snake_len;i++)
+    {
+        if ((snake_head_x==snake_tail_x[i])&&(snake_head_y==snake_tail_y[i])) gameover=0;
+    }
+    if ((snake_head_x==0)||(snake_head_x==WIDTH)) gameover=0;
+    if ((snake_head_y==0)||(snake_head_y==HEIGHT)) gameover=0;
+
+
+    //manually exiting the game is handled inside move_snake function
+}
+
+void randomise()
+{
+    fruit_x=rand() % WIDTH;
+    fruit_y=rand() % HEIGHT;
+}
 
 void move_snake()
 {
@@ -38,6 +60,11 @@ void move_snake()
             case 'd': 
             {
                 direction='r';
+                break;
+            }
+            case 'x':
+            {
+                gameover=0;
                 break;
             }
             
@@ -70,7 +97,7 @@ void move_snake()
             break;
         }
     }
-    for (int i = snake_len - 1; i > 0; i--) 
+    for (int i=snake_len-1;i>0;i--) 
     {
         snake_tail_x[i]=snake_tail_x[i-1];
         snake_tail_y[i]=snake_tail_y[i-1];
@@ -83,6 +110,31 @@ void fruit_check()
 {
     if ((snake_head_x==fruit_x)&&(snake_head_y==fruit_y))
     {
+        //Changing fruit position
+        randomise();
+
+        //checking if fruit is inside snake after randomising
+        int fruit_in_snake=1;
+        while (fruit_in_snake)
+        {
+            fruit_in_snake=0;
+            for (int i=0;i<snake_len;i++)
+            {
+                if ((fruit_x==snake_tail_x[i])||(fruit_y==snake_tail_y[i])) 
+                {
+                    randomise();
+                    fruit_in_snake=1;
+                    break;
+                }
+            }
+
+        }
+        //in case x or y gets 0
+        while ((fruit_x==0)||(fruit_y==0))
+        {
+            randomise();
+        }
+        //Making snake bigger
         switch(direction)
         {
             case 'u':
@@ -114,6 +166,7 @@ void fruit_check()
                 break;
             }
         }
+        score++;
     }
 }
 
@@ -151,16 +204,25 @@ void draw()
         }
         printf("\n");
     }
+    printf("Score : %d \n",score);
+    printf("X- %d \nY- %d",fruit_x,fruit_y);
 }
 
-int main()
+void main()
 {
-    while (1)
+    while (gameover==1)
     {
         fruit_check();
         draw();
         move_snake();
+        is_gameover();
         Sleep(100);
     }
-    return 0;
+    system("cls");
+    printf("GAMEOVER \n");
+    printf("Your score was : %d \n",score);
+    printf("Thank You for playing \n");
+    printf("Press x to exit");
+    char exit=getch();
+    while (exit!='x') exit=(char)getch();
 }
