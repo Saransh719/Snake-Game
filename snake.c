@@ -215,7 +215,7 @@ void main()
         draw();
         move_snake();
         is_gameover();
-        Sleep(100);
+        Sleep(50);
     }
     system("cls");
     printf("GAMEOVER \n");
