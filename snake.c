@@ -6,25 +6,14 @@
 #define HEIGHT 25
 #define WIDTH 50 
 
-int snake_tail_x[100]={WIDTH/2-1,WIDTH/2-2};
-int snake_tail_y[100]={HEIGHT/2,HEIGHT/2};
+int snake_tail_x[100]={WIDTH/2-1,WIDTH/2-2,WIDTH/2-3,WIDTH/2-4,WIDTH/2-5};
+int snake_tail_y[100]={HEIGHT/2,HEIGHT/2,HEIGHT/2,HEIGHT/2,HEIGHT/2};
 int snake_head_x=WIDTH/2,snake_head_y=HEIGHT/2;
 int is_tail=0;
-int snake_length=1;
 char direction='r';
+int fruit_x=24,fruit_y=5;
+int snake_len=5;
 
-void moving_tail_repititive_code(int temp_x,int temp_y)
-{
-    int i=0;
-    while ((snake_tail_x[i+1]!=0)&&(snake_tail_y[i+1]!=0))
-    {
-        snake_tail_x[i+1]=snake_tail_x[i];
-        snake_tail_y[i+1]=snake_tail_y[i];
-        i++;
-    }
-    snake_tail_x[1]=temp_x;
-    snake_tail_y[1]=temp_y;
-}
 void move_snake()
 {
     if (kbhit())
@@ -56,43 +45,77 @@ void move_snake()
     }
     int temp_x=snake_tail_x[0];
     int temp_y=snake_tail_y[0];
+    snake_tail_x[0]=snake_head_x;
+    snake_tail_y[0]=snake_head_y;
     switch (direction)
     {
         case 'r':
         {
             snake_head_x++;
-            snake_tail_x[0]=snake_head_x-1;
-            snake_tail_y[0]=snake_head_y;
-            moving_tail_repititive_code(temp_x,temp_y);
             break;
         }
         case 'l':
         {
             snake_head_x--;
-            snake_tail_x[0]=snake_head_x+1;
-            snake_tail_y[0]=snake_head_y;
-            moving_tail_repititive_code(temp_x,temp_y);
             break;
         }
         case 'u':
         {
             snake_head_y--;
-            snake_tail_y[0]=snake_head_y+1;
-            snake_tail_x[0]=snake_head_x;
-            moving_tail_repititive_code(temp_x,temp_y);
             break;
         }
         case 'd':
         {
             snake_head_y++;
-            snake_tail_y[0]=snake_head_y-1;
-            snake_tail_x[0]=snake_head_x;
-            moving_tail_repititive_code(temp_x,temp_y);
             break;
         }
     }
+    for (int i = snake_len - 1; i > 0; i--) 
+    {
+        snake_tail_x[i]=snake_tail_x[i-1];
+        snake_tail_y[i]=snake_tail_y[i-1];
+    }
+    snake_tail_x[1]=temp_x;
+    snake_tail_y[1]=temp_y;
 }
 
+void fruit_check()
+{
+    if ((snake_head_x==fruit_x)&&(snake_head_y==fruit_y))
+    {
+        switch(direction)
+        {
+            case 'u':
+            {
+                snake_tail_y[snake_len]=snake_tail_y[snake_len-1]+1;
+                snake_tail_x[snake_len]=snake_tail_x[snake_len-1];
+                snake_len++;
+                break;
+            }
+            case 'd':
+            {
+                snake_tail_y[snake_len]=snake_tail_y[snake_len-1]-1;
+                snake_tail_x[snake_len]=snake_tail_x[snake_len-1];
+                snake_len++;
+                break;
+            }
+            case 'l':
+            {
+                snake_tail_y[snake_len]=snake_tail_y[snake_len-1];
+                snake_tail_x[snake_len]=snake_tail_x[snake_len-1]+1;
+                snake_len++;
+                break;
+            }
+            case 'r':
+            {
+                snake_tail_y[snake_len]=snake_tail_y[snake_len-1];
+                snake_tail_x[snake_len]=snake_tail_x[snake_len-1]-1;
+                snake_len++;
+                break;
+            }
+        }
+    }
+}
 
 void draw()
 {
@@ -107,6 +130,8 @@ void draw()
             else if ((j==0)||(j==WIDTH)) printf("|");
             //printing snake head
             else if ((i==snake_head_y)&&(j==snake_head_x)) printf("*");
+            //printing fruit
+            else if ((j==fruit_x)&&(i==fruit_y)) printf("@");
             //printing tail
             else
             {
@@ -132,9 +157,10 @@ int main()
 {
     while (1)
     {
+        fruit_check();
         draw();
         move_snake();
-        Sleep(200);
+        Sleep(100);
     }
     return 0;
 }
