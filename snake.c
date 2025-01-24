@@ -6,6 +6,7 @@
 #define HEIGHT 25
 #define WIDTH 50 
 
+float sleep_time=16.66;     //in milliseconds
 int snake_tail_x[100]={WIDTH/2-1,WIDTH/2-2};
 int snake_tail_y[100]={HEIGHT/2,HEIGHT/2};
 int snake_head_x=WIDTH/2,snake_head_y=HEIGHT/2;
@@ -15,6 +16,21 @@ int fruit_x=40,fruit_y=5;
 int snake_len=2;
 int score=0;
 int gameover=1;
+
+void initialise()
+{
+    snake_tail_x[0]=WIDTH/2-1;
+    snake_tail_x[1]=WIDTH/2-2;
+    snake_tail_y[0]=HEIGHT/2;
+    snake_tail_y[1]=HEIGHT/2;
+    snake_head_x=WIDTH/2,snake_head_y=HEIGHT/2;
+    is_tail=0;
+    direction='r';
+    fruit_x=40,fruit_y=5;
+    snake_len=2;
+    score=0;
+    gameover=1;
+}
 
 void is_gameover()
 {
@@ -209,19 +225,26 @@ void draw()
 
 void main()
 {
-    while (gameover==1)
+    while (1)
     {
-        fruit_check();
-        draw();
-        move_snake();
-        is_gameover();
-        Sleep(50);
+        while (gameover==1)
+        {
+            fruit_check();
+            draw();
+            move_snake();
+            is_gameover();
+            Sleep(sleep_time);
+        }
+        system("cls");
+        printf("GAMEOVER \n");
+        printf("Your score was : %d \n",score);
+        printf("Thank You for playing \n");
+        printf("Press x to exit");
+        printf("Press r to restart");
+        char button=getch();
+        if (button=='x') break;
+        // char exit=getch();
+        if (button=='r') initialise();
+        
     }
-    system("cls");
-    printf("GAMEOVER \n");
-    printf("Your score was : %d \n",score);
-    printf("Thank You for playing \n");
-    printf("Press x to exit");
-    char exit=getch();
-    while (exit!='x') exit=(char)getch();
 }
