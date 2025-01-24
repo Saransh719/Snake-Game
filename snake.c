@@ -239,7 +239,7 @@ void main()
         printf("GAMEOVER \n");
         printf("Your score was : %d \n",score);
         printf("Thank You for playing \n");
-        printf("Press x to exit");
+        printf("Press x to exit\n");
         printf("Press r to restart");
         char button=getch();
         if (button=='x') break;
